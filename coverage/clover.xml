@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1745961521610" clover="3.2.0">
-  <project timestamp="1745961521610" name="All files">
+<coverage generated="1745964103965" clover="3.2.0">
+  <project timestamp="1745964103965" name="All files">
     <metrics statements="55" coveredstatements="50" conditionals="44" coveredconditionals="37" methods="6" coveredmethods="6" elements="105" coveredelements="93" complexity="0" loc="55" ncloc="55" packages="1" files="1" classes="1"/>
     <file name="infer.ts" path="/workspaces/prisma-schema-infer/src/lib/infer.ts">
       <metrics statements="55" coveredstatements="50" conditionals="44" coveredconditionals="37" methods="6" coveredmethods="6"/>
