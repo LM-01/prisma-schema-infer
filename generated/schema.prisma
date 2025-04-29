@@ -1,0 +1,19 @@
+model Car {
+  id String @id @default(uuid())
+  vehicle_id String @map("vehicle_id")
+  make String
+  model String
+  year Int
+  price Int?
+  sold Boolean
+  features CarFeatures[]
+  addedAt DateTime?
+}
+
+model CarFeatures {
+  id String @id @default(uuid())
+  name String
+  premium Boolean
+  carId String
+  car Car @relation(fields: [carId], references: [id])
+}
