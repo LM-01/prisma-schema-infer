@@ -5,10 +5,14 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
+    "main": "dist/index.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "example": "npx tsx src/index.ts Car examples/example_01.json",
     "example-script": "tsx scripts/generateFromExample.ts"
+  },
+  "bin": {
+    "prisma-schema-infer": "./dist/index.js"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
@@ -18,5 +22,6 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.4.5"
-  }
+  },
+  "files": ["dist"]
 }

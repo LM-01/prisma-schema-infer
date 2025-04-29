@@ -81,7 +81,7 @@ model CarFeatures {
 ## 🛠 Dev Scripts
 
 ```bash
-npm run sample     # generate schema from example_01.json
+npm run example     # generate schema from example_01.json
 npm run dev        # run CLI directly via tsx
 npm run test       # run unit tests
 npm run coverage   # view coverage report
