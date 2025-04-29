@@ -21,11 +21,6 @@ try {
   const result = inferPrismaSchemaModel(modelName, data, { normalizeArrays: true });
   console.log(result);
 } catch (err) {
-    if (err instanceof Error) {
-      console.error('Failed to generate schema:', err.message);
-    } else {
-      console.error('Failed to generate schema:', err);
-    }
-    process.exit(1);
-  }
-  
+  console.error('Failed to generate schema:', err.message);
+  process.exit(1);
+}

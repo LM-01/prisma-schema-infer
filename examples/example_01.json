@@ -1,0 +1,24 @@
+[
+    {
+      "vehicle_id": "CAR-001",
+      "make": "Tesla",
+      "model": "Model 3",
+      "year": 2023,
+      "price": 45999,
+      "sold": false,
+      "features": [
+        { "name": "Autopilot", "premium": true },
+        { "name": "Heated Seats", "premium": false }
+      ],
+      "addedAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "vehicle_id": "CAR-002",
+      "make": "Toyota",
+      "model": "Corolla",
+      "year": 2022,
+      "features": [],
+      "sold": true
+    }
+  ]
+  

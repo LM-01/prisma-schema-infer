@@ -14,8 +14,20 @@ describe('inferPrismaSchemaModel', () => {
     expect(output).toContain('model User');
     expect(output).toContain('id Int @id @default(autoincrement())');
     expect(output).toContain('name String');
-    expect(output).toContain('createdAt DateTime @default(now())');
-    expect(output).toContain('updatedAt DateTime @updatedAt');
+    expect(output).toContain('createdAt DateTime? @default(now())');
+    expect(output).toContain('updatedAt DateTime? @updatedAt');
+  });
+
+  it('should mark fields as optional if missing from some records', () => {
+    const sample = [
+      { title: 'Only title' },
+      { description: 'Only description' }
+    ];
+  
+    const output = inferPrismaSchemaModel('Partial', sample);
+  
+    expect(output).toContain('title String?');
+    expect(output).toContain('description String?');
   });
 
   it('should normalize arrays of objects into related models', () => {

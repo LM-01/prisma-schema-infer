@@ -1,3 +1,4 @@
+// src/lib/infer.ts
 export type GenericObject = { [key: string]: any };
 
 export interface InferenceOptions {
@@ -10,12 +11,16 @@ export function inferPrismaSchemaModel(
   options: InferenceOptions = {},
   generatedModels: Set<string> = new Set()
 ): string {
+  const fieldPresence: Map<string, number> = new Map();
   const fieldMap = new Map<string, { type: string; optional: boolean; original: string }>();
   const relatedModels: string[] = [];
+  const totalRecords = records.length;
 
   for (const obj of records) {
     for (const [key, value] of Object.entries(obj)) {
       const isOptional = value === null || value === undefined;
+      const count = fieldPresence.get(key) ?? 0;
+      fieldPresence.set(key, count + 1);
 
       if (
         options.normalizeArrays &&
@@ -42,20 +47,22 @@ export function inferPrismaSchemaModel(
           );
           relatedModels.push(withRelation);
         }
-
         continue;
       }
 
       if (!fieldMap.has(key)) {
         fieldMap.set(key, {
           type: inferType(value, key),
-          optional: isOptional,
+          optional: false,
           original: key
         });
-      } else if (isOptional) {
-        const existing = fieldMap.get(key)!;
-        existing.optional = true;
       }
+    }
+  }
+
+  for (const [key, count] of fieldPresence.entries()) {
+    if (count < totalRecords && fieldMap.has(key)) {
+      fieldMap.get(key)!.optional = true;
     }
   }
 

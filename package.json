@@ -6,7 +6,8 @@
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "example": "tsx scripts/generateFromExample.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
