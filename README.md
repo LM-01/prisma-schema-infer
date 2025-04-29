@@ -2,6 +2,11 @@
 
 > Auto-generate Prisma schema models from JSON data
 
+![npm](https://img.shields.io/npm/v/prisma-schema-infer)
+![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![license](https://img.shields.io/npm/l/prisma-schema-infer)
+![issues](https://img.shields.io/github/issues/LM-01/prisma-schema-infer)
+
 ---
 
 ## 📦 Installation
