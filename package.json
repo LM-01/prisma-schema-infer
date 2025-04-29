@@ -1,13 +1,14 @@
 {
   "name": "prisma-schema-infer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "test": "jest",
     "coverage": "jest --coverage",
-    "example": "tsx scripts/generateFromExample.ts"
+    "example": "npx tsx src/index.ts Car examples/example_01.json",
+    "example-script": "tsx scripts/generateFromExample.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
