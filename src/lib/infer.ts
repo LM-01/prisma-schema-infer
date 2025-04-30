@@ -1,15 +1,16 @@
-// src/lib/infer.ts
 export type GenericObject = { [key: string]: any };
 
 export interface InferenceOptions {
   normalizeArrays?: boolean;
+  maxDepth?: number;
 }
 
 export function inferPrismaSchemaModel(
   name: string,
   records: GenericObject[],
-  options: InferenceOptions = {},
-  generatedModels: Set<string> = new Set()
+  options: InferenceOptions = { maxDepth: 4 },
+  generatedModels: Set<string> = new Set(),
+  depth: number = 1
 ): string {
   const fieldPresence: Map<string, number> = new Map();
   const fieldMap = new Map<string, { type: string; optional: boolean; original: string }>();
@@ -39,7 +40,7 @@ export function inferPrismaSchemaModel(
         if (!generatedModels.has(nestedModelName)) {
           generatedModels.add(nestedModelName);
           for (const rec of value) rec[`${name.charAt(0).toLowerCase() + name.slice(1)}Id`] = 'placeholder';
-          const nestedModel = inferPrismaSchemaModel(nestedModelName, value as GenericObject[], options, generatedModels);
+          const nestedModel = inferPrismaSchemaModel(nestedModelName, value as GenericObject[], options, generatedModels, depth + 1);
           const parentKey = `${name.charAt(0).toLowerCase() + name.slice(1)}Id`;
           const withRelation = nestedModel.replace(
             new RegExp(`${parentKey} String`),
@@ -50,13 +51,12 @@ export function inferPrismaSchemaModel(
         continue;
       }
 
-      if (!fieldMap.has(key)) {
-        fieldMap.set(key, {
-          type: inferType(value, key),
-          optional: false,
-          original: key
-        });
-      }
+      const inferredType = inferType(value, key, name, options, generatedModels, relatedModels, depth);
+      fieldMap.set(key, {
+        type: inferredType,
+        optional: isOptional,
+        original: key
+      });
     }
   }
 
@@ -93,7 +93,15 @@ export function inferPrismaSchemaModel(
   return [lines.join('\n'), ...relatedModels].join('\n\n');
 }
 
-function inferType(value: any, key?: string): string {
+function inferType(
+  value: any,
+  key: string | undefined,
+  parentName: string,
+  options: InferenceOptions,
+  generatedModels: Set<string>,
+  relatedModels: string[],
+  depth: number
+): string {
   if (value === null || value === undefined) {
     if (key?.toLowerCase().includes('id')) return 'String';
     return 'Json';
@@ -103,10 +111,31 @@ function inferType(value: any, key?: string): string {
     if (isISODateString(value)) return 'DateTime';
     return 'String';
   }
+
   if (typeof value === 'number') return Number.isInteger(value) ? 'Int' : 'Float';
   if (typeof value === 'boolean') return 'Boolean';
+
   if (Array.isArray(value)) return 'Json';
-  if (typeof value === 'object') return 'Json';
+
+  if (typeof value === 'object') {
+    if (depth >= (options.maxDepth ?? 4)) return 'Json';
+
+    const nestedModelName = `${capitalize(parentName)}${capitalize(key ?? 'Nested')}`;
+    value[`${parentName.charAt(0).toLowerCase() + parentName.slice(1)}Id`] = 'placeholder';
+
+    if (!generatedModels.has(nestedModelName)) {
+      generatedModels.add(nestedModelName);
+      const nestedModel = inferPrismaSchemaModel(nestedModelName, [value], options, generatedModels, depth + 1);
+      const parentKey = `${parentName.charAt(0).toLowerCase() + parentName.slice(1)}Id`;
+      const withRelation = nestedModel.replace(
+        new RegExp(`${parentKey} String`),
+        `${parentKey} String\n  ${parentName.charAt(0).toLowerCase() + parentName.slice(1)} ${parentName} @relation(fields: [${parentKey}], references: [id])`
+      );
+      relatedModels.push(withRelation);
+    }
+
+    return nestedModelName;
+  }
 
   return 'Json';
 }
