@@ -2,11 +2,17 @@
 import fs from 'fs';
 import path from 'path';
 import { inferPrismaSchemaModel } from './lib/infer';
+import { version } from '../package.json';
 
 export { inferPrismaSchemaModel }; 
 
 if (require.main === module) {
   const args = process.argv.slice(2);
+
+  if (args.includes('--version')) {
+    console.log(version);
+    process.exit(0);
+  }
 
   if (args.length < 2) {
     console.error('Usage: npx prisma-schema-infer <ModelName> <path/to/sample.json>');
